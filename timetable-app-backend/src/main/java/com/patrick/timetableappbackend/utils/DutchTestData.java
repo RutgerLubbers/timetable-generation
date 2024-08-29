@@ -37,7 +37,11 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConditionalOnProperty(prefix = "timetable.create-test-data", name = "dutch", havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(
+    prefix = "timetable.create-test-data",
+    name = "dutch",
+    havingValue = "true",
+    matchIfMissing = false)
 public class DutchTestData implements ApplicationRunner {
 
   /*
@@ -76,8 +80,8 @@ public class DutchTestData implements ApplicationRunner {
   private static final CourseHours GEOGRAPHY = new CourseHours("Geography", everyYear(2));
   private static final CourseHours HISTORY = new CourseHours("History", everyYear(2));
   private static final CourseHours BIOLOGY = new CourseHours("Biology", everyYear(0, 2));
-  private static final CourseHours PHYSICS_AND_CHEMISTRY = new CourseHours("Physics and Chemistry",
-      everyYear(2));
+  private static final CourseHours PHYSICS_AND_CHEMISTRY =
+      new CourseHours("Physics and Chemistry", everyYear(2));
   private static final CourseHours DRAWING = new CourseHours("Drawing", everyYear(2));
   private static final CourseHours MATHEMATICS = new CourseHours("Mathematics", everyYear(4));
   private static final CourseHours MUSIC = new CourseHours("Music", everyYear(1));
@@ -86,10 +90,25 @@ public class DutchTestData implements ApplicationRunner {
   private static final CourseHours MENTOR = new CourseHours("Mentor Lesson", everyYear(1));
   private static final CourseHours ARTS = new CourseHours("Arts", everyYear(1));
 
-  private List<CourseHours> curriculum = List.of(DUTCH, LATIN, GREEK, ENGELS, FRANS, DUITS,
-      GEOGRAPHY, HISTORY, BIOLOGY, PHYSICS_AND_CHEMISTRY, DRAWING, MATHEMATICS, MUSIC, DRAMA, GYM,
-      MENTOR,
-      ARTS);
+  private List<CourseHours> curriculum =
+      List.of(
+          DUTCH,
+          LATIN,
+          GREEK,
+          ENGELS,
+          FRANS,
+          DUITS,
+          GEOGRAPHY,
+          HISTORY,
+          BIOLOGY,
+          PHYSICS_AND_CHEMISTRY,
+          DRAWING,
+          MATHEMATICS,
+          MUSIC,
+          DRAMA,
+          GYM,
+          MENTOR,
+          ARTS);
 
   private final ConstraintRepo constraintRepo;
   private final LessonRepo lessonRepository;
@@ -144,8 +163,7 @@ public class DutchTestData implements ApplicationRunner {
     createConstraints();
   }
 
-  private void createConstraint(String name,
-      String weight) {
+  private void createConstraint(String name, String weight) {
     ConstraintModel constraintModel =
         ConstraintModel.builder().description(name).weight(weight).build();
 
@@ -243,16 +261,13 @@ public class DutchTestData implements ApplicationRunner {
     createLessons("VWO", SECOND);
   }
 
-  private void createLessons(String level,
-      Year year) {
+  private void createLessons(String level, Year year) {
     for (CourseHours courseHours : curriculum) {
       createLessons(courseHours, level, year);
     }
   }
 
-  private void createLessons(CourseHours courseHours,
-      String level,
-      Year year) {
+  private void createLessons(CourseHours courseHours, String level, Year year) {
     int hours = courseHours.hours().get(year.ordinal());
     if (hours == 0) {
       return;
@@ -298,10 +313,7 @@ public class DutchTestData implements ApplicationRunner {
     }
   }
 
-  private void createStudentGroup(String level,
-      Year year,
-      String name,
-      long numberOfStudents) {
+  private void createStudentGroup(String level, Year year, String name, long numberOfStudents) {
     String levelYear = getLevelYear(level, year);
     String className = format("%s %s", levelYear, name);
     StudentGroup studentGroup =
@@ -317,8 +329,7 @@ public class DutchTestData implements ApplicationRunner {
     studentGroups.computeIfAbsent(levelYear, k -> new ArrayList<>()).add(studentGroup);
   }
 
-  private static String getLevelYear(String level,
-      Year year) {
+  private static String getLevelYear(String level, Year year) {
     return format("%s%s", level, 1 + year.ordinal());
   }
 
@@ -334,8 +345,7 @@ public class DutchTestData implements ApplicationRunner {
     createStudentGroup("VWO", SECOND, "d", 30L);
   }
 
-  private void createTeacher(CourseHours courseHours,
-      String name) {
+  private void createTeacher(CourseHours courseHours, String name) {
     Teacher teacher = Teacher.builder().name(name).build();
     teacherRepo.save(teacher);
 
@@ -351,9 +361,7 @@ public class DutchTestData implements ApplicationRunner {
     }
   }
 
-  private void createTimeslot(DayOfWeek dayOfWeek,
-      LocalTime startTime,
-      Duration duration) {
+  private void createTimeslot(DayOfWeek dayOfWeek, LocalTime startTime, Duration duration) {
     Timeslot timeslot =
         Timeslot.builder()
             .dayOfWeek(dayOfWeek)
@@ -371,9 +379,7 @@ public class DutchTestData implements ApplicationRunner {
     createDaySchedule(FRIDAY);
   }
 
-  record CourseHours(String subject, List<Integer> hours) {
-
-  }
+  record CourseHours(String subject, List<Integer> hours) {}
 
   private static List<Integer> everyYear(int hours) {
     List<Integer> result = new ArrayList<>();
@@ -383,8 +389,7 @@ public class DutchTestData implements ApplicationRunner {
     return result;
   }
 
-  private static List<Integer> everyYear(int first,
-      int hours) {
+  private static List<Integer> everyYear(int first, int hours) {
     List<Integer> result = new ArrayList<>();
     result.add(first);
     for (int i = 0; i < 5; i++) {

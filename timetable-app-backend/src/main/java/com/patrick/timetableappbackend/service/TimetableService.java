@@ -99,8 +99,7 @@ public class TimetableService {
   }
 
   public ScoreAnalysis<HardSoftScore> analyze(
-      Timetable problem,
-      ScoreAnalysisFetchPolicy fetchPolicy) {
+      Timetable problem, ScoreAnalysisFetchPolicy fetchPolicy) {
     return fetchPolicy == null
         ? solutionManager.analyze(problem)
         : solutionManager.analyze(problem, fetchPolicy);

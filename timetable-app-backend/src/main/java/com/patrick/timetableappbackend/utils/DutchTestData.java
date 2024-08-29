@@ -181,7 +181,7 @@ public class DutchTestData implements ApplicationRunner {
     createConstraint("roomConflictUniversity", "HARD");
     createConstraint("teacherConflictUniversity", "HARD");
     createConstraint("overlappingTimeslot", "HARD");
-    createConstraint("sportLessonInSportRoom", "HARD");
+    //    createConstraint("sportLessonInSportRoom", "HARD");
     createConstraint("lessonDurationConflict", "HARD");
 
     // medium

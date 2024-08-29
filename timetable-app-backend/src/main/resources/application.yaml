@@ -44,7 +44,7 @@ timefold:
   solver:
     solver-config-xml: timetableSolverConfig.xml
     termination:
-      spent-limit: PT10h
+      spent-limit: ${TIMEFOLD_LIMIT:PT10h}
 
     # best-score-limit: 0hard/*soft
     # environment-mode: FULL_ASSERT

@@ -16,7 +16,7 @@ import com.patrick.timetableappbackend.repository.ConstraintRepo;
 import com.patrick.timetableappbackend.repository.LessonRepo;
 import com.patrick.timetableappbackend.repository.RoomRepo;
 import com.patrick.timetableappbackend.repository.TimeslotRepo;
-import com.patrick.timetableappbackend.solver.TimetableConstraintConfiguration;
+import com.patrick.timetableappbackend.solver.ConstraintWeightOverridesImpl;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
@@ -62,12 +62,16 @@ public class TimetableService {
     final List<Timeslot> timeslots = timeslotRepo.findAll();
     final List<Room> rooms = roomRepo.findAll();
     final List<ConstraintModel> constraintModels = constraintRepo.findAll();
-    final TimetableConstraintConfiguration timetableConstraintConfiguration =
-        new TimetableConstraintConfiguration(constraintModels);
+    //    final TimetableConstraintConfiguration timetableConstraintConfiguration =
+    //        new TimetableConstraintConfiguration(constraintModels);
     final List<Lesson> lessons = lessonRepo.findAll();
 
     return new Timetable(
-        timeslots, rooms, lessons, timetableConstraintConfiguration, problemDuration);
+        timeslots,
+        rooms,
+        lessons,
+        new ConstraintWeightOverridesImpl(constraintModels),
+        problemDuration);
   }
 
   // How to integrate with Spring JPA to persist the Timetable solution
@@ -108,14 +112,11 @@ public class TimetableService {
   public Timetable getTimetable(String jobId) {
     Timetable timetable = getTimetableAndCheckForExceptions(jobId);
     SolverStatus solverStatus = solverManager.getSolverStatus(jobId);
-    timetable.setSolverStatus(solverStatus);
-    return timetable;
+    return timetable.toBuilder().solverStatus(solverStatus).build();
   }
 
   public Timetable getStatus(String jobId) {
-    Timetable timetable = getTimetableAndCheckForExceptions(jobId);
-    SolverStatus solverStatus = solverManager.getSolverStatus(jobId);
-    return new Timetable(timetable.getScore(), solverStatus);
+    return getTimetable(jobId);
   }
 
   public Timetable terminateSolving(String jobId) {

@@ -1,12 +1,29 @@
-import { AfterViewInit, Component, ElementRef, Inject, OnInit, Renderer2, ViewChild, ViewEncapsulation, } from '@angular/core';
-import { User } from '../model/user';
-import { LoginService } from '../login/login.service';
-import { TimetableService } from './timetable.service';
-import { Data, HardMediumSoftScore, Lesson, Room, SemiGroup, Timeslot, Timetable } from '../model/timetableEntities';
-import { Router } from '@angular/router';
-import { Observable, map, startWith } from 'rxjs';
-import { FormControl, FormGroup } from '@angular/forms';
+import {Component, OnInit,} from '@angular/core';
+import {User} from '../model/user';
+import {LoginService} from '../login/login.service';
+import {TimetableService} from './timetable.service';
+import {Data, HardMediumSoftScore, Lesson, LessonType, Timeslot, Timetable} from '../model/timetableEntities';
+import {map, Observable, startWith} from 'rxjs';
+import {FormControl, FormGroup} from '@angular/forms';
 
+const dayOrder = {
+  MONDAY: 1,
+  TUESDAY: 2,
+  WEDNESDAY: 3,
+  THURSDAY: 4,
+  FRIDAY: 5,
+};
+
+function compare(timeslot1: Timeslot, timeslot2: Timeslot) {
+  const day1 = dayOrder[timeslot1.dayOfWeek as keyof typeof dayOrder];
+  const day2 = dayOrder[timeslot2.dayOfWeek as keyof typeof dayOrder];
+  if (day1 != day2) {
+    return day1 - day2;
+  }
+  return (timeslot1.startTime ?? '').localeCompare(
+    timeslot2.startTime ?? ''
+  );
+}
 
 @Component({
   selector: 'app-timetable',
@@ -34,7 +51,12 @@ export class TimetableComponent implements OnInit {
 
   selectedStudentGroup?: string;
   selectedSemiGroup?: string;
+
+  uniqueTimeslots: Timeslot[] | undefined;
+  days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
   studentGroups: string[] = [];
+  timetablesPerGroup: Map<String, Timetable> = new Map<string, Timetable>();
+
   filteredStudentGroups?: Observable<string[]>;
 
   teachers: string[] = [];
@@ -55,7 +77,8 @@ export class TimetableComponent implements OnInit {
   constructor(
     private loginService: LoginService,
     private timetableService: TimetableService
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     if (Object.keys(this.user).length == 0) {
@@ -68,7 +91,7 @@ export class TimetableComponent implements OnInit {
     this.user.role = this.loginService.userConnected.role;
     // this.timetableService.getJobId().subscribe((msg) => this.jobId = msg)
     this.jobId = localStorage.getItem('jobId');
-    if (this.jobId != null && this.jobId != '') {
+    if (this.jobId) {
       console.log(this.jobId);
       this.timetableService.getTimetable(this.jobId).subscribe((timetable) => {
         this.timetableData = timetable;
@@ -79,20 +102,22 @@ export class TimetableComponent implements OnInit {
         // Populate student groups
         // this.populateStudentGroups();
         this.populateStudentGroups();
+        this.populateUniqueTimeslots();
 
+        this.renderTables();
         // Filter timetable initially
         this.filterTimetable2('', '');
       });
     }
     this.filteredStudentGroups = this.studentGroupFormGroup.controls[
       'studentGroupControl'
-    ].valueChanges.pipe(
+      ].valueChanges.pipe(
       startWith(''),
       map((value) => this._filterStudents(value || ''))
     );
     this.filteredTeachers = this.teacherFormGroup.controls[
       'teacherControl'
-    ].valueChanges.pipe(
+      ].valueChanges.pipe(
       startWith(''),
       map((value) => this._filterTeachers(value || ''))
     );
@@ -104,6 +129,34 @@ export class TimetableComponent implements OnInit {
     } else {
       return false;
     }
+  }
+
+
+  renderTables() {
+    this.timetablesPerGroup = new Map<string, Timetable>()
+    this.studentGroups.forEach(group => {
+      console.log(group);
+      let lessons = this.timetableData.lessons?.filter((lesson) => {
+        return lesson.studentGroup.name == group;
+      })
+      lessons?.forEach(lesson => {
+        lesson.timeslot = this.timetableData.timeslots?.find((timeslot) => timeslot.id == lesson.timeslot)
+      })
+      lessons?.sort((l1, l2) => {
+        return compare(l1.timeslot, l2.timeslot);
+      })
+      console.log(lessons);
+      this.timetablesPerGroup.set(group, {lessons: lessons})
+    })
+  }
+
+  getLesson(group: string, dayOfWeek: String, timeslot: Timeslot): Lesson | undefined {
+    let timetable = this.timetablesPerGroup.get(group);
+    return timetable?.lessons?.find((lesson) => {
+      let lessonTimeslot = lesson.timeslot as Timeslot;
+      return (lessonTimeslot.dayOfWeek?.toUpperCase() == dayOfWeek.toUpperCase())
+        && (lessonTimeslot.startTime == timeslot.startTime);
+    })
   }
 
   // #### 1st variant ####
@@ -124,14 +177,6 @@ export class TimetableComponent implements OnInit {
 
   displayTimetable(lessons: Lesson[] | undefined) {
     // Sort the displayed timetable
-    const dayOrder = {
-      MONDAY: 1,
-      TUESDAY: 2,
-      WEDNESDAY: 3,
-      THURSDAY: 4,
-      FRIDAY: 5,
-    };
-
     const sortedTimetable = lessons?.sort((a, b) => {
       const timeslotA = this.timetableData?.timeslots?.find(
         (slot) => slot.id === a.timeslot
@@ -281,6 +326,7 @@ export class TimetableComponent implements OnInit {
     }
   }
 
+
   // Function to populate the student group select element
   // possible to be deleted in future
   populateStudentGroups2() {
@@ -402,7 +448,7 @@ export class TimetableComponent implements OnInit {
       this.populateStudentGroups();
       this.studentGroupFormGroup.controls[
         'studentGroupControl'
-      ].reset();
+        ].reset();
     } else {
       //this.toggle === 'teacher'
       if (timetableContainer) timetableContainer.innerHTML = '';
@@ -433,6 +479,13 @@ export class TimetableComponent implements OnInit {
     const target = event.target as HTMLInputElement;
     target.select();
   }
+
+  private populateUniqueTimeslots() {
+    this.uniqueTimeslots = this.timetableData.timeslots?.filter((ts) => ts.dayOfWeek == "MONDAY")
+
+  }
+
+  protected readonly LessonType = LessonType;
 }
 
 //todo refactoring + adding autocomplete feature (todo: check if autocompletion is implemented)...

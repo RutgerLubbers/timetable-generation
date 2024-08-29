@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { ConfirmationService } from './confirmation.service';
-import { TimetableService } from '../timetable/timetable.service';
-import { CoreService } from '../core/core.service';
-import { forkJoin } from 'rxjs';
-import { Timetable } from '../model/timetableEntities';
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {ConfirmationService} from './confirmation.service';
+import {TimetableService} from '../timetable/timetable.service';
+import {CoreService} from '../core/core.service';
+import {forkJoin} from 'rxjs';
+import {Timeslot, Timetable} from '../model/timetableEntities';
 
 @Component({
   selector: 'app-confirmation',
@@ -22,10 +22,11 @@ export class ConfirmationComponent implements OnInit {
   problemDuration: number | undefined;
   data?: Timetable;
 
-  constructor(private router: Router, 
-  private confirmationService: ConfirmationService,
-   private timetableService: TimetableService,
-  private coreService: CoreService) {}
+  constructor(private router: Router,
+              private confirmationService: ConfirmationService,
+              private timetableService: TimetableService,
+              private coreService: CoreService) {
+  }
 
   ngOnInit(): void {
     this.getEntitiesCount();
@@ -42,13 +43,13 @@ export class ConfirmationComponent implements OnInit {
       this.confirmationService.getStudentGroupCount(),
     ]).subscribe(
       ([
-        constraintCount,
-        roomCount,
-        timeslotCount,
-        teacherCount,
-        lessonCount,
-        studentGroupCount,
-      ]) => {
+         constraintCount,
+         roomCount,
+         timeslotCount,
+         teacherCount,
+         lessonCount,
+         studentGroupCount,
+       ]) => {
         this.constraintCount = constraintCount;
         this.roomCount = roomCount;
         this.timeslotCount = timeslotCount;
@@ -62,13 +63,19 @@ export class ConfirmationComponent implements OnInit {
   getTimetableData() {
     this.timetableService.getTimetableData().subscribe((timetable) => {
       this.data = timetable;
-      this.problemDuration = timetable.duration;
+      if (timetable.duration) {
+        this.problemDuration = timetable.duration / 60;
+      }
       console.log(this.data);
     });
   }
 
+  isMonday(timeslot: Timeslot) {
+    return timeslot.dayOfWeek == "MONDAY"
+  }
+
   generateTimetable() {
-    if(this.data != null && this.problemDuration) { // && this.problemDuration != 0
+    if (this.data != null && this.problemDuration) { // && this.problemDuration != 0
       this.loading = true;
       // this.data.duration = this.problemDuration;
       this.timetableService.generateTimetable(this.data).subscribe({
@@ -84,8 +91,8 @@ export class ConfirmationComponent implements OnInit {
       });
       this.coreService.openSnackBar(
         'Generating Timetable... Please wait ' +
-          this.problemDuration +
-          ' minutes!'
+        this.problemDuration +
+        ' minutes!'
       );
       // Timeout before redirecting
       setTimeout(() => {
@@ -93,9 +100,9 @@ export class ConfirmationComponent implements OnInit {
         this.router.navigate(['/timetable']);
       }, this.problemDuration * 60000 + 3000); //this.problemDuration * 60000 (minutes) + 3 seconds
     } else {
-    //Todo: add a message that covers all scenarios
-    this.coreService.openSnackBar('No timetable data found or problem duration is not different from 0');
-  }
+      //Todo: add a message that covers all scenarios
+      this.coreService.openSnackBar('No timetable data found or problem duration is not different from 0');
+    }
   }
 }
 

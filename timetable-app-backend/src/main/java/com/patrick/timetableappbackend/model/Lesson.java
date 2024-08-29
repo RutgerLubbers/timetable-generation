@@ -1,5 +1,7 @@
 package com.patrick.timetableappbackend.model;
 
+import static jakarta.persistence.FetchType.EAGER;
+
 import ai.timefold.solver.core.api.domain.entity.PlanningEntity;
 import ai.timefold.solver.core.api.domain.lookup.PlanningId;
 import ai.timefold.solver.core.api.domain.variable.PlanningVariable;
@@ -7,9 +9,23 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.patrick.timetableappbackend.utils.LessonStrengthComparator;
 import com.patrick.timetableappbackend.utils.RoomStrengthComparator;
 import com.patrick.timetableappbackend.utils.TimeslotStrengthComparator;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import java.util.Objects;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.Hibernate;
 
 @PlanningEntity(difficultyComparatorClass = LessonStrengthComparator.class)
@@ -30,11 +46,15 @@ public class Lesson {
 
   private String subject;
 
-  @ManyToOne(cascade = {CascadeType.MERGE})
+  @ManyToOne(
+      fetch = EAGER,
+      cascade = {CascadeType.MERGE})
   @JoinColumn(name = "teacher_id")
   private Teacher teacher;
 
-  @ManyToOne(cascade = {CascadeType.MERGE})
+  @ManyToOne(
+      fetch = EAGER,
+      cascade = {CascadeType.MERGE})
   @JoinColumn(name = "student_group_id")
   private StudentGroup studentGroup;
 
@@ -47,13 +67,13 @@ public class Lesson {
   private int duration;
 
   @JsonIdentityReference
-  @ManyToOne() // cascade = CascadeType.MERGE
+  @ManyToOne(fetch = EAGER) // cascade = CascadeType.MERGE
   @JoinColumn(name = "timeslot_id")
   @PlanningVariable(strengthComparatorClass = TimeslotStrengthComparator.class)
   private Timeslot timeslot;
 
   @JsonIdentityReference
-  @ManyToOne() // cascade = CascadeType.MERGE
+  @ManyToOne(fetch = EAGER) // cascade = CascadeType.MERGE
   @JoinColumn(name = "room_id")
   @PlanningVariable(strengthComparatorClass = RoomStrengthComparator.class)
   private Room room;
@@ -182,8 +202,12 @@ public class Lesson {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
+      return false;
+    }
     Lesson lesson = (Lesson) o;
     return id != null && Objects.equals(id, lesson.id);
   }

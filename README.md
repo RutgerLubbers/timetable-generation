@@ -211,6 +211,11 @@ Contributions are welcome! Please follow the standard GitHub workflow:
 3. Make your changes.
 4. Submit a pull request.
 
+## Getting started data
+
+Generate data by setting the property `timetable.create-test-data.dutch` to `true`. This will generate, on each backend
+start-up, a fresh set of lessons and classes to be planned. The data mimics a secondary level school in Maastricht.
+
 ## License
 
 Copyright 2024 Francis-Patrick Diallo

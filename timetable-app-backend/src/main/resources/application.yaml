@@ -1,0 +1,58 @@
+logging:
+  #level: ai.timefold.solver=DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %clr(${LOG_LEVEL_PATTERN:%5p}) %blue([%-15.15t]) - %logger{36} - %msg%n"
+
+server:
+  port: 8200
+
+  # todo: Http settings(to connect with frontend)
+  #server.ssl.key-store-type=PKCS12
+  #server.ssl.key-store=classpath:keystore/timetable.p12
+  #server.ssl.key-store-password=timetable
+  #server.ssl.key-alias=timetable
+  #server.ssl.key-password=timetable
+  #server.ssl.enabled=true
+
+  ##trust store location
+  #trust.store=classpath:keystore/timetable.p12
+  ##trust store password
+  #trust.store.password=timetable
+
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/timetable
+    username: timetable
+    password: timetable
+
+  jpa:
+    properties:
+      hibernate:
+        # dialect: org.hibernate.dialect.PostgreSQLDialect
+        # Hibernate ddl auto (create, create-drop, validate, update)
+        ddl-auto: update
+
+        jdbc:
+          lob:
+            non_contextual_creation: true
+    show-sql: true
+
+timefold:
+  # benchmark:
+  #   solver-benchmark-config-xml=to be defined + timespent
+  solver:
+    solver-config-xml: timetableSolverConfig.xml
+    termination:
+      spent-limit: PT10h
+
+    # best-score-limit: 0hard/*soft
+    # environment-mode: FULL_ASSERT
+#
+#  solver-manager:
+#    parallel-solver-count: 4
+
+timetable:
+  create-test-data:
+    dutch: false
+  secret-key: 8LG3uOaRrvCbgIvwoKOF8KCLlem9jfCXjoDwn4S54YWP8KClmfCdqZLko4fikr3wq7a15Za58KCJuuWvivCnqJfwp6ao8Kasq/CsubfwnZew8KuZgOGYlA==

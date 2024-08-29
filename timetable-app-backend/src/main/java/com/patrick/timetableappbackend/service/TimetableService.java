@@ -2,14 +2,22 @@ package com.patrick.timetableappbackend.service;
 
 import ai.timefold.solver.core.api.score.analysis.ScoreAnalysis;
 import ai.timefold.solver.core.api.score.buildin.hardsoft.HardSoftScore;
-import ai.timefold.solver.core.api.solver.*;
+import ai.timefold.solver.core.api.solver.ScoreAnalysisFetchPolicy;
+import ai.timefold.solver.core.api.solver.SolutionManager;
+import ai.timefold.solver.core.api.solver.SolverManager;
+import ai.timefold.solver.core.api.solver.SolverStatus;
 import com.patrick.timetableappbackend.exception.TimetableSolverException;
-import com.patrick.timetableappbackend.model.*;
+import com.patrick.timetableappbackend.model.ConstraintModel;
+import com.patrick.timetableappbackend.model.Lesson;
+import com.patrick.timetableappbackend.model.Room;
+import com.patrick.timetableappbackend.model.Timeslot;
+import com.patrick.timetableappbackend.model.Timetable;
 import com.patrick.timetableappbackend.repository.ConstraintRepo;
 import com.patrick.timetableappbackend.repository.LessonRepo;
 import com.patrick.timetableappbackend.repository.RoomRepo;
 import com.patrick.timetableappbackend.repository.TimeslotRepo;
 import com.patrick.timetableappbackend.solver.TimetableConstraintConfiguration;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -27,6 +35,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Slf4j
 public class TimetableService {
+
   private static final Logger LOGGER = LoggerFactory.getLogger(TimetableService.class);
 
   private final RoomRepo roomRepo;
@@ -37,7 +46,7 @@ public class TimetableService {
   private final SolutionManager<Timetable, HardSoftScore> solutionManager;
 
   @Value("${timefold.solver.termination.spent-limit}")
-  private String duration;
+  private Duration duration;
 
   // TODO: Without any "time to live", the map may eventually grow out of memory.
   private final ConcurrentMap<String, Job> jobIdToJob = new ConcurrentHashMap<>();
@@ -48,7 +57,7 @@ public class TimetableService {
 
   public Timetable getTimetableData() {
 
-    Long problemDuration = Long.parseLong(this.duration.substring(0, this.duration.length() - 1));
+    Long problemDuration = duration.getSeconds();
 
     final List<Timeslot> timeslots = timeslotRepo.findAll();
     final List<Room> rooms = roomRepo.findAll();
@@ -90,7 +99,8 @@ public class TimetableService {
   }
 
   public ScoreAnalysis<HardSoftScore> analyze(
-      Timetable problem, ScoreAnalysisFetchPolicy fetchPolicy) {
+      Timetable problem,
+      ScoreAnalysisFetchPolicy fetchPolicy) {
     return fetchPolicy == null
         ? solutionManager.analyze(problem)
         : solutionManager.analyze(problem, fetchPolicy);

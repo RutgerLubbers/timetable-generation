@@ -1,0 +1,39 @@
+//import java.nio.file.Paths
+//
+//pluginManagement {
+//    repositories {
+//        maven {
+//            var artifactoryUrl = System.getenv("ARTIFACTORY_URL")
+//            var artifactoryUid = System.getenv("ARTIFACTORY_UID")
+//            var artifactoryPwd = System.getenv("ARTIFACTORY_PWD")
+//
+//            var propertiesFile = Paths.get(".secrets").toFile()
+//            if (propertiesFile.exists()) {
+//                Properties properties = new Properties()
+//                properties.load(propertiesFile.newDataInputStream())
+//                artifactoryUrl = artifactoryUrl ?: properties.get("artifactory_url").toString()
+//                artifactoryUid = artifactoryUid ?: properties.get("artifactory_uid").toString()
+//                artifactoryPwd = artifactoryPwd ?: properties.get("artifactory_pwd").toString()
+//            }
+//
+//            if (System.getenv("ARTIFACTORY_PWD") != null || artifactoryPwd != null) {
+//                credentials {
+//                    username = System.getenv("ARTIFACTORY_UID") ?: artifactoryUid
+//                    password = System.getenv("ARTIFACTORY_PWD") ?: artifactoryPwd
+//                }
+//                authentication {
+//                    basic(BasicAuthentication)
+//                }
+//            }
+//
+//            allowInsecureProtocol = true
+//
+//            name = "plugins-artifactory"
+//            url = uri("${artifactoryUrl}/win-virtual/")
+//            println("[build] Configured '" + name + "' to use '" + url + "'.")
+//        }
+//    }
+//}
+
+rootProject.name = 'timetable-generation-backend'
+

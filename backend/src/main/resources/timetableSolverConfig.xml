@@ -9,7 +9,7 @@
 
     <scoreDirectorFactory>
         <constraintProviderClass>
-            com.patrick.timetableappbackend.solver.TimetableConstraintProvider
+          com.ilionx.timetable.solver.TimetableConstraintProvider
         </constraintProviderClass>
     <initializingScoreTrend>ONLY_DOWN/ONLY_DOWN/ANY</initializingScoreTrend>
     </scoreDirectorFactory>

@@ -1,8 +1,39 @@
+hawaii:
+  async:
+    enabled: false
+  crypto:
+    enabled: false
+  logging:
+    filters:
+      transaction-type:
+        enabled: true
+      container-name:
+        enabled: false
+      oidc:
+        enabled: false
+      software-version:
+        enabled: false
+      client-ip-log:
+        enabled: false
+
 logging:
   #level: ai.timefold.solver=DEBUG
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %clr(${LOG_LEVEL_PATTERN:%5p}) %blue([%-15.15t]) - %logger{36} - %msg%n"
 
+management:
+  # Enable `/actuator/health/readiness` and `/actuator/health/liveness` endpoints
+  endpoint:
+    env:
+      show-values: always
+      enabled: false
+    health:
+      probes:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: env,health,prometheus
 server:
   port: 8200
 

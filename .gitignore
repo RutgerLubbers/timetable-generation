@@ -4,6 +4,7 @@
 *.log
 *.DS_Store
 *.env
+.secrets
 
 # Ignore IDE files
 .idea/

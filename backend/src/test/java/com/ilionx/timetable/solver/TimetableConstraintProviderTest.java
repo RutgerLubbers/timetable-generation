@@ -417,7 +417,7 @@ public class TimetableConstraintProviderTest {
   }
 
   @Test
-  void maximmumCoursesTeached() {
+  void maximumCoursesTaught() {
 
     StudentGroup studentGroup = aStudentGroup(1L, "Group1");
     StudentGroup studentGroup2 = aStudentGroup(2L, "Group1");
@@ -586,7 +586,7 @@ public class TimetableConstraintProviderTest {
             room);
 
     constraintVerifier
-        .verifyThat(TimetableConstraintProvider::maximmumCoursesTeached)
+        .verifyThat(TimetableConstraintProvider::maximumCoursesTaught)
         .given(
             firstTuesdayLesson,
             secondTuesdayLesson,

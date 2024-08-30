@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -40,6 +41,7 @@ public class Teacher {
 
   private String name;
 
+  @Default
   @EqualsAndHashCode.Exclude
   @JoinTable
   @JsonIdentityReference

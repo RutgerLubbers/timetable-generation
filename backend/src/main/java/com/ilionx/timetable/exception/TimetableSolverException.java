@@ -1,8 +1,12 @@
 package com.ilionx.timetable.exception;
 
+import java.io.Serial;
 import org.springframework.http.HttpStatus;
 
 public class TimetableSolverException extends RuntimeException {
+
+  @Serial
+  private static final long serialVersionUID = 6000842602244029960L;
 
   private final String jobId;
 

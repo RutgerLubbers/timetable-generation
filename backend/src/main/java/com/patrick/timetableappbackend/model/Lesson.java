@@ -45,11 +45,11 @@ public class Lesson {
 
   private String subject;
 
-  @JoinColumn(name = "teacher_id")
+  @JoinColumn
   @ManyToOne(fetch = EAGER, cascade = MERGE)
   private Teacher teacher;
 
-  @JoinColumn(name = "student_group_id")
+  @JoinColumn
   @ManyToOne(fetch = EAGER, cascade = MERGE)
   private StudentGroup studentGroup;
 
@@ -62,13 +62,13 @@ public class Lesson {
   // Duration in minutes
   private int duration;
 
-  @JoinColumn(name = "timeslot_id")
+  @JoinColumn
   @JsonIdentityReference
   @ManyToOne(fetch = EAGER)
   @PlanningVariable(strengthComparatorClass = TimeslotStrengthComparator.class)
   private Timeslot timeslot;
 
-  @JoinColumn(name = "room_id")
+  @JoinColumn
   @JsonIdentityReference
   @ManyToOne(fetch = EAGER)
   @PlanningVariable(strengthComparatorClass = RoomStrengthComparator.class)

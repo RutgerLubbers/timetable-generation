@@ -10,9 +10,9 @@
 .vscode/
 
 # Backend specific
-timetable-app-backend/target/
+backend/target/
 
 # Frontend specific
-timetable-app/node_modules/
-timetable-app/dist/
-timetable-app/.angular/
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/

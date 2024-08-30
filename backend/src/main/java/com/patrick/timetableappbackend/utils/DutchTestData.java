@@ -1,5 +1,8 @@
 package com.patrick.timetableappbackend.utils;
 
+import static com.patrick.timetableappbackend.model.ConstraintWeight.HARD;
+import static com.patrick.timetableappbackend.model.ConstraintWeight.MEDIUM;
+import static com.patrick.timetableappbackend.model.ConstraintWeight.SOFT;
 import static com.patrick.timetableappbackend.model.Year.FIRST;
 import static java.lang.String.format;
 import static java.time.DayOfWeek.FRIDAY;
@@ -8,7 +11,8 @@ import static java.time.DayOfWeek.THURSDAY;
 import static java.time.DayOfWeek.TUESDAY;
 import static java.time.DayOfWeek.WEDNESDAY;
 
-import com.patrick.timetableappbackend.model.ConstraintModel;
+import com.patrick.timetableappbackend.model.Constraint;
+import com.patrick.timetableappbackend.model.ConstraintWeight;
 import com.patrick.timetableappbackend.model.Lesson;
 import com.patrick.timetableappbackend.model.LessonType;
 import com.patrick.timetableappbackend.model.Room;
@@ -164,42 +168,42 @@ public class DutchTestData implements ApplicationRunner {
     createConstraints();
   }
 
-  private void createConstraint(String name, String weight) {
-    ConstraintModel constraintModel =
-        ConstraintModel.builder().description(name).weight(weight).build();
+  private void createConstraint(String name, ConstraintWeight weight) {
+    Constraint constraintModel =
+        Constraint.builder().description(name).weight(weight).build();
 
     constraintRepo.save(constraintModel);
   }
 
   private void createConstraints() {
-    createConstraint("roomConflict", "HARD");
-    createConstraint("teacherConflict", "HARD");
-    createConstraint("studentGroupConflict", "HARD");
-    createConstraint("capacityRoomConflict", "HARD");
-    //    createConstraint("courseStudentsGroupedInTheSameRoom", "HARD");
-    //    createConstraint("seminarStudentsGroupedInTheSameRoom", "HARD");
-    //    createConstraint("labsStudentsGroupedInTheSameRoom", "HARD");
-    createConstraint("roomConflictUniversity", "HARD");
-    createConstraint("teacherConflictUniversity", "HARD");
-    createConstraint("overlappingTimeslot", "HARD");
-    //    createConstraint("sportLessonInSportRoom", "HARD");
-    createConstraint("lessonDurationConflict", "HARD");
+    createConstraint("roomConflict", HARD);
+    createConstraint("teacherConflict", HARD);
+    createConstraint("studentGroupConflict", HARD);
+    createConstraint("capacityRoomConflict", HARD);
+    //    createConstraint("courseStudentsGroupedInTheSameRoom", HARD);
+    //    createConstraint("seminarStudentsGroupedInTheSameRoom", HARD);
+    //    createConstraint("labsStudentsGroupedInTheSameRoom", HARD);
+    createConstraint("roomConflictUniversity", HARD);
+    createConstraint("teacherConflictUniversity", HARD);
+    createConstraint("overlappingTimeslot", HARD);
+    //    createConstraint("sportLessonInSportRoom", HARD);
+    createConstraint("lessonDurationConflict", HARD);
 
     // medium
-    createConstraint("maximumCoursesForStudents", "MEDIUM");
-    createConstraint("maximmumCoursesTeached", "MEDIUM");
-    createConstraint("maximizePreferredTimeslotAssignments", "MEDIUM");
-    createConstraint("coursesGroupedInTheSameTimeslot", "MEDIUM");
-    createConstraint("seminarsGroupedInTheSameTimeslot", "MEDIUM");
+    createConstraint("maximumCoursesForStudents", MEDIUM);
+    createConstraint("maximmumCoursesTeached", MEDIUM);
+    createConstraint("maximizePreferredTimeslotAssignments", MEDIUM);
+    createConstraint("coursesGroupedInTheSameTimeslot", MEDIUM);
+    createConstraint("seminarsGroupedInTheSameTimeslot", MEDIUM);
 
     // soft
-    createConstraint("teacherRoomStability", "SOFT");
-    createConstraint("teacherTimeEfficiency", "SOFT");
-    createConstraint("studentGroupVariety", "SOFT");
-    createConstraint("gapsLongerThan4Hours", "SOFT");
-    createConstraint("labsGroupedInTheSameTimeslot", "SOFT");
-    createConstraint("coursesInTheSameBuilding", "SOFT");
-    createConstraint("labAfterSeminar", "SOFT");
+    createConstraint("teacherRoomStability", SOFT);
+    createConstraint("teacherTimeEfficiency", SOFT);
+    createConstraint("studentGroupVariety", SOFT);
+    createConstraint("gapsLongerThan4Hours", SOFT);
+    createConstraint("labsGroupedInTheSameTimeslot", SOFT);
+    createConstraint("coursesInTheSameBuilding", SOFT);
+    createConstraint("labAfterSeminar", SOFT);
   }
 
   private void createDaySchedule(DayOfWeek dayOfWeek) {

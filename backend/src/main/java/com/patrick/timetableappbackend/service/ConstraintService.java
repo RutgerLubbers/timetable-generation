@@ -1,6 +1,6 @@
 package com.patrick.timetableappbackend.service;
 
-import com.patrick.timetableappbackend.model.ConstraintModel;
+import com.patrick.timetableappbackend.model.Constraint;
 import com.patrick.timetableappbackend.repository.ConstraintRepo;
 import java.util.List;
 import java.util.Optional;
@@ -15,11 +15,11 @@ public class ConstraintService {
 
   private final ConstraintRepo constraintRepo;
 
-  public List<ConstraintModel> getAllConstraints() {
+  public List<Constraint> getAllConstraints() {
     return constraintRepo.findAllByOrderByIdAsc();
   }
 
-  public Optional<ConstraintModel> getConstraintById(Long id) {
+  public Optional<Constraint> getConstraintById(Long id) {
     return constraintRepo.findById(id);
   }
 
@@ -27,19 +27,19 @@ public class ConstraintService {
     return constraintRepo.count();
   }
 
-  public ConstraintModel createConstraint(ConstraintModel constraintModel) {
-    return constraintRepo.save(constraintModel);
+  public Constraint createConstraint(Constraint constraint) {
+    return constraintRepo.save(constraint);
   }
 
-  public ConstraintModel updateConstraint(Long id, ConstraintModel updatedConstraintModel) {
+  public Constraint updateConstraint(Long id, Constraint updatedConstraint) {
     if (constraintRepo.existsById(id)) {
-      updatedConstraintModel =
-          ConstraintModel.builder()
+      updatedConstraint =
+          Constraint.builder()
               .id(id)
-              .description(updatedConstraintModel.getDescription())
-              .weight(updatedConstraintModel.getWeight())
+              .description(updatedConstraint.getDescription())
+              .weight(updatedConstraint.getWeight())
               .build();
-      return constraintRepo.save(updatedConstraintModel);
+      return constraintRepo.save(updatedConstraint);
     } else {
       throw new RuntimeException("Constraint not found with id: " + id);
     }

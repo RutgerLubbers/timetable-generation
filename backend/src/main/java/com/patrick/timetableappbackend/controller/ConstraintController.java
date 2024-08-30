@@ -1,6 +1,6 @@
 package com.patrick.timetableappbackend.controller;
 
-import com.patrick.timetableappbackend.model.ConstraintModel;
+import com.patrick.timetableappbackend.model.Constraint;
 import com.patrick.timetableappbackend.service.ConstraintService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -18,16 +18,16 @@ public class ConstraintController {
   private final ConstraintService constraintService;
 
   @GetMapping
-  public ResponseEntity<List<ConstraintModel>> getAllConstraints() {
-    List<ConstraintModel> constraintModels = constraintService.getAllConstraints();
-    return new ResponseEntity<>(constraintModels, HttpStatus.OK);
+  public ResponseEntity<List<Constraint>> getAllConstraints() {
+    List<Constraint> constraints = constraintService.getAllConstraints();
+    return new ResponseEntity<>(constraints, HttpStatus.OK);
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<ConstraintModel> getConstraintById(@PathVariable Long id) {
+  public ResponseEntity<Constraint> getConstraintById(@PathVariable Long id) {
     return constraintService
         .getConstraintById(id)
-        .map(constraintModel -> new ResponseEntity<>(constraintModel, HttpStatus.OK))
+        .map(constraint -> new ResponseEntity<>(constraint, HttpStatus.OK))
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
 
@@ -38,17 +38,17 @@ public class ConstraintController {
   }
 
   @PostMapping
-  public ResponseEntity<ConstraintModel> createConstraint(
-      @RequestBody ConstraintModel constraintModel) {
-    ConstraintModel createdConstraintModel = constraintService.createConstraint(constraintModel);
-    return new ResponseEntity<>(createdConstraintModel, HttpStatus.CREATED);
+  public ResponseEntity<Constraint> createConstraint(
+      @RequestBody Constraint constraint) {
+    Constraint createdConstraint = constraintService.createConstraint(constraint);
+    return new ResponseEntity<>(createdConstraint, HttpStatus.CREATED);
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<ConstraintModel> updateConstraint(
-      @PathVariable Long id, @RequestBody ConstraintModel updatedConstraintModel) {
+  public ResponseEntity<Constraint> updateConstraint(
+      @PathVariable Long id, @RequestBody Constraint updatedConstraint) {
     try {
-      ConstraintModel updated = constraintService.updateConstraint(id, updatedConstraintModel);
+      Constraint updated = constraintService.updateConstraint(id, updatedConstraint);
       return new ResponseEntity<>(updated, HttpStatus.OK);
     } catch (RuntimeException e) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);

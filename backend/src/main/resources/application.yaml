@@ -6,20 +6,6 @@ logging:
 server:
   port: 8200
 
-  # todo: Http settings(to connect with frontend)
-  #server.ssl.key-store-type=PKCS12
-  #server.ssl.key-store=classpath:keystore/timetable.p12
-  #server.ssl.key-store-password=timetable
-  #server.ssl.key-alias=timetable
-  #server.ssl.key-password=timetable
-  #server.ssl.enabled=true
-
-  ##trust store location
-  #trust.store=classpath:keystore/timetable.p12
-  ##trust store password
-  #trust.store.password=timetable
-
-
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/timetable
@@ -27,15 +13,14 @@ spring:
     password: timetable
 
   jpa:
-    properties:
-      hibernate:
-        # dialect: org.hibernate.dialect.PostgreSQLDialect
-        # Hibernate ddl auto (create, create-drop, validate, update)
-        ddl-auto: update
+    hibernate:
+      # dialect: org.hibernate.dialect.PostgreSQLDialect
+      # Hibernate ddl auto (create, create-drop, validate, update)
+      ddl-auto: create
 
-        jdbc:
-          lob:
-            non_contextual_creation: true
+      jdbc:
+        lob:
+          non_contextual_creation: true
     show-sql: true
 
 timefold:

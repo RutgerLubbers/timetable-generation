@@ -49,4 +49,4 @@
     <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
 </mat-table>
 
-<mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of teachers"></mat-paginator>
+<mat-paginator pageSize="50" [pageSizeOptions]="[10, 25, 50, 100]" aria-label="Select page of teachers"></mat-paginator>

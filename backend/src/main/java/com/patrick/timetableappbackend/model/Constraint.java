@@ -17,11 +17,11 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 @Data
-@Entity
+@Entity(name = "planning_constraint")
 @EqualsAndHashCode
 @NoArgsConstructor
 @ToString
-public class ConstraintModel {
+public class Constraint {
 
   @Id
   @GeneratedValue(strategy = IDENTITY)

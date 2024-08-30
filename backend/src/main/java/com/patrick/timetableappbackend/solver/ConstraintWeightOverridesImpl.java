@@ -1,10 +1,13 @@
 package com.patrick.timetableappbackend.solver;
 
+import static com.patrick.timetableappbackend.model.ConstraintWeight.HARD;
+import static com.patrick.timetableappbackend.model.ConstraintWeight.MEDIUM;
+import static com.patrick.timetableappbackend.model.ConstraintWeight.SOFT;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import ai.timefold.solver.core.api.domain.solution.ConstraintWeightOverrides;
 import ai.timefold.solver.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
-import com.patrick.timetableappbackend.model.ConstraintModel;
+import com.patrick.timetableappbackend.model.Constraint;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,18 +24,18 @@ public class ConstraintWeightOverridesImpl
 
   private final Map<String, HardMediumSoftScore> weightOverrides = new HashMap<>();
 
-  public ConstraintWeightOverridesImpl(List<ConstraintModel> constraintList) {
-    constraintList.forEach(
+  public ConstraintWeightOverridesImpl(List<Constraint> constraints) {
+    constraints.forEach(
         (constraint) -> {
           weightOverrides.put(constraint.getDescription(), toScore(constraint));
         });
   }
 
-  private HardMediumSoftScore toScore(ConstraintModel constraint) {
+  private HardMediumSoftScore toScore(Constraint constraint) {
     return switch (constraint.getWeight()) {
-      case "HARD" -> HardMediumSoftScore.ONE_HARD;
-      case "MEDIUM" -> HardMediumSoftScore.ONE_MEDIUM;
-      case "SOFT" -> HardMediumSoftScore.ONE_SOFT;
+      case HARD -> HardMediumSoftScore.ONE_HARD;
+      case MEDIUM -> HardMediumSoftScore.ONE_MEDIUM;
+      case SOFT -> HardMediumSoftScore.ONE_SOFT;
       default -> HardMediumSoftScore.ZERO;
     };
   }

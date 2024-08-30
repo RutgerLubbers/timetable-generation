@@ -7,7 +7,7 @@ import ai.timefold.solver.core.api.solver.SolutionManager;
 import ai.timefold.solver.core.api.solver.SolverManager;
 import ai.timefold.solver.core.api.solver.SolverStatus;
 import com.patrick.timetableappbackend.exception.TimetableSolverException;
-import com.patrick.timetableappbackend.model.ConstraintModel;
+import com.patrick.timetableappbackend.model.Constraint;
 import com.patrick.timetableappbackend.model.Lesson;
 import com.patrick.timetableappbackend.model.Room;
 import com.patrick.timetableappbackend.model.Timeslot;
@@ -61,7 +61,7 @@ public class TimetableService {
 
     final List<Timeslot> timeslots = timeslotRepo.findAll();
     final List<Room> rooms = roomRepo.findAll();
-    final List<ConstraintModel> constraintModels = constraintRepo.findAll();
+    final List<Constraint> constraints = constraintRepo.findAll();
     //    final TimetableConstraintConfiguration timetableConstraintConfiguration =
     //        new TimetableConstraintConfiguration(constraintModels);
     final List<Lesson> lessons = lessonRepo.findAll();
@@ -70,7 +70,7 @@ public class TimetableService {
         timeslots,
         rooms,
         lessons,
-        new ConstraintWeightOverridesImpl(constraintModels),
+        new ConstraintWeightOverridesImpl(constraints),
         problemDuration);
   }
 

@@ -1,6 +1,9 @@
 package com.patrick.timetableappbackend.model;
 
+import static jakarta.persistence.CascadeType.MERGE;
+import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.FetchType.EAGER;
+import static jakarta.persistence.GenerationType.IDENTITY;
 
 import ai.timefold.solver.core.api.domain.entity.PlanningEntity;
 import ai.timefold.solver.core.api.domain.lookup.PlanningId;
@@ -9,211 +12,66 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.patrick.timetableappbackend.utils.LessonStrengthComparator;
 import com.patrick.timetableappbackend.utils.RoomStrengthComparator;
 import com.patrick.timetableappbackend.utils.TimeslotStrengthComparator;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
 
-@PlanningEntity(difficultyComparatorClass = LessonStrengthComparator.class)
-@Getter
-@Setter
-@ToString
-@Entity
-@Builder
 @AllArgsConstructor
+@Builder(toBuilder = true)
+@Data
+@Entity
+@EqualsAndHashCode
 @NoArgsConstructor
+@PlanningEntity(difficultyComparatorClass = LessonStrengthComparator.class)
+@ToString
 public class Lesson {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id", nullable = false, unique = true, updatable = false)
+  @GeneratedValue(strategy = IDENTITY)
   @PlanningId
   private Long id;
 
   private String subject;
 
-  @ManyToOne(
-      fetch = EAGER,
-      cascade = {CascadeType.MERGE})
   @JoinColumn(name = "teacher_id")
+  @ManyToOne(fetch = EAGER, cascade = MERGE)
   private Teacher teacher;
 
-  @ManyToOne(
-      fetch = EAGER,
-      cascade = {CascadeType.MERGE})
   @JoinColumn(name = "student_group_id")
+  @ManyToOne(fetch = EAGER, cascade = MERGE)
   private StudentGroup studentGroup;
 
-  @Enumerated(EnumType.STRING)
+  @Enumerated(STRING)
   private LessonType lessonType;
 
-  @Enumerated(EnumType.STRING)
+  @Enumerated(STRING)
   private Year year;
 
+  // Duration in minutes
   private int duration;
 
-  @JsonIdentityReference
-  @ManyToOne(fetch = EAGER) // cascade = CascadeType.MERGE
   @JoinColumn(name = "timeslot_id")
+  @JsonIdentityReference
+  @ManyToOne(fetch = EAGER)
   @PlanningVariable(strengthComparatorClass = TimeslotStrengthComparator.class)
   private Timeslot timeslot;
 
-  @JsonIdentityReference
-  @ManyToOne(fetch = EAGER) // cascade = CascadeType.MERGE
   @JoinColumn(name = "room_id")
+  @JsonIdentityReference
+  @ManyToOne(fetch = EAGER)
   @PlanningVariable(strengthComparatorClass = RoomStrengthComparator.class)
   private Room room;
 
-  public Lesson(long id, String subject, StudentGroup studentGroup) {
-    this.id = id;
-    this.subject = subject;
-    this.studentGroup = studentGroup;
-  }
-
-  public Lesson(long id, String subject, Teacher teacher, StudentGroup studentGroup) {
-    this.id = id;
-    this.subject = subject;
-    this.teacher = teacher;
-    this.studentGroup = studentGroup;
-  }
-
-  public Lesson(
-      long id, String subject, Teacher teacher, StudentGroup studentGroup, LessonType type) {
-    this.id = id;
-    this.subject = subject;
-    this.teacher = teacher;
-    this.studentGroup = studentGroup;
-    this.lessonType = type;
-  }
-
-  public Lesson(
-      long id,
-      String subject,
-      Teacher teacher,
-      StudentGroup studentGroup,
-      LessonType type,
-      Year year) {
-    this.id = id;
-    this.subject = subject;
-    this.teacher = teacher;
-    this.studentGroup = studentGroup;
-    this.lessonType = type;
-    this.year = year;
-  }
-
-  public Lesson(
-      long id,
-      String subject,
-      Teacher teacher,
-      StudentGroup studentGroup,
-      LessonType type,
-      Year year,
-      int duration) {
-    this.id = id;
-    this.subject = subject;
-    this.teacher = teacher;
-    this.studentGroup = studentGroup;
-    this.lessonType = type;
-    this.year = year;
-    this.duration = duration;
-  }
-
-  public Lesson(
-      long id,
-      String subject,
-      Teacher teacher,
-      StudentGroup studentGroup,
-      Timeslot timeslot,
-      Room room) {
-    this.id = id;
-    this.subject = subject;
-    this.teacher = teacher;
-    this.studentGroup = studentGroup;
-    this.timeslot = timeslot;
-    this.room = room;
-  }
-
-  public Lesson(
-      long id,
-      String subject,
-      Teacher teacher,
-      StudentGroup studentGroup,
-      int duration,
-      Timeslot timeslot,
-      Room room) {
-    this.id = id;
-    this.subject = subject;
-    this.teacher = teacher;
-    this.studentGroup = studentGroup;
-    this.duration = duration;
-    this.timeslot = timeslot;
-    this.room = room;
-  }
-
-  public Lesson(
-      long id,
-      String subject,
-      LessonType lessonType,
-      Teacher teacher,
-      StudentGroup studentGroup,
-      Timeslot timeslot,
-      Room room) {
-    this.id = id;
-    this.subject = subject;
-    this.lessonType = lessonType;
-    this.teacher = teacher;
-    this.studentGroup = studentGroup;
-    this.timeslot = timeslot;
-    this.room = room;
-  }
-
-  public Lesson(
-      long id,
-      String subject,
-      LessonType lessonType,
-      Teacher teacher,
-      StudentGroup studentGroup,
-      int duration,
-      Timeslot timeslot,
-      Room room) {
-    this.id = id;
-    this.subject = subject;
-    this.lessonType = lessonType;
-    this.teacher = teacher;
-    this.studentGroup = studentGroup;
-    this.duration = duration;
-    this.timeslot = timeslot;
-    this.room = room;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
-      return false;
-    }
-    Lesson lesson = (Lesson) o;
-    return id != null && Objects.equals(id, lesson.id);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, subject, teacher, studentGroup, lessonType, year, duration);
-  }
 }
